@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ALLERGENS, METHOD_LABELS } from "../../../shared/data/reference.ts";
-import { computeAge, formatAge, isIsoDate } from "../../../shared/logic/age.ts";
+import { computeAge, formatAge, isIsoDate, toIsoDate } from "../../../shared/logic/age.ts";
 import type { AllergenId, FeedingMethod } from "../../../shared/types.ts";
 import { Button, Callout, Card, cx } from "../components/ui.tsx";
 import { actions, today, type Eczema, type Profile } from "../lib/store.ts";
@@ -158,6 +158,17 @@ export function ProfileForm({ initial, onSave, submitLabel }: { initial?: Profil
   );
 }
 
+/** Uygulamayı denemek isteyenler için açıkça "örnek" olarak işaretlenmiş 7,5 aylık bir profil */
+function loadSample() {
+  const birth = new Date();
+  birth.setMonth(birth.getMonth() - 7);
+  birth.setDate(birth.getDate() - 15);
+  actions.saveProfile({ name: "Örnek Ela", birthDate: toIsoDate(birth), method: "karma", eczema: "yok", allergies: [] });
+  for (const id of ["kabak", "brokoli", "tatli-patates", "avokado", "armut"]) actions.markTried(id, "sevdi");
+  actions.markTried("havuc", "sevmedi");
+  actions.markTried("havuc", "notr");
+}
+
 export function Onboarding() {
   const [step, setStep] = useState<"welcome" | "form">("welcome");
 
@@ -192,6 +203,9 @@ export function Onboarding() {
         </Callout>
         <Button size="lg" className="mt-6 w-full" onClick={() => setStep("form")}>
           Hadi başlayalım →
+        </Button>
+        <Button size="lg" variant="outline" className="mt-2.5 w-full" onClick={loadSample}>
+          👀 Örnek bebekle göz at
         </Button>
         <p className="mt-3 text-center text-xs font-semibold text-muted">Tüm veriler yalnızca bu cihazda saklanır.</p>
       </div>

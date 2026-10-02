@@ -3,7 +3,8 @@ import { genitive } from "../../../shared/logic/text.ts";
 import { useBaby } from "../lib/baby.ts";
 import { navigate } from "../lib/router.ts";
 import { SosSheet } from "./Sos.tsx";
-import { cx } from "./ui.tsx";
+import { useToast } from "../lib/toast.ts";
+import { Toast, cx } from "./ui.tsx";
 
 const NAV = [
   { path: "/", label: "Bugün", icon: "☀️", match: (p: string) => p === "/" || p.startsWith("/hafta") },
@@ -16,6 +17,7 @@ const NAV = [
 export function Layout({ path, children }: { path: string; children: ReactNode }) {
   const baby = useBaby();
   const [sos, setSos] = useState(false);
+  const toastMessage = useToast();
 
   return (
     <div className="min-h-dvh">
@@ -63,6 +65,7 @@ export function Layout({ path, children }: { path: string; children: ReactNode }
       </nav>
 
       <SosSheet open={sos} onClose={() => setSos(false)} />
+      <Toast message={toastMessage} />
     </div>
   );
 }

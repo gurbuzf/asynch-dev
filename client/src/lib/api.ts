@@ -1,8 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
+import { STANDALONE } from "./env.ts";
 
 const cache = new Map<string, unknown>();
 
+async function localJson(url: string): Promise<unknown> {
+  const { handleApi } = await import("../../../shared/api.ts");
+  const parsed = new URL(url, "http://local");
+  const { status, body } = handleApi(parsed.pathname.replace(/^\/api/, ""), Object.fromEntries(parsed.searchParams));
+  if (status >= 400) throw new Error((body as { error?: string }).error ?? `İstek başarısız (${status})`);
+  return body;
+}
+
 export async function getJson<T>(url: string): Promise<T> {
+  if (STANDALONE) {
+    const body = await localJson(url);
+    cache.set(url, body);
+    return body as T;
+  }
   const res = await fetch(url, { headers: { Accept: "application/json" } });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error((body as { error?: string }).error ?? `İstek başarısız (${res.status})`);

@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ALLERGENS, NUTRIENT_LABELS } from "../../../shared/data/reference.ts";
 import type { AllergenId, CalloutTone, Nutrient } from "../../../shared/types.ts";
 
@@ -265,6 +265,45 @@ export function PageHeader({ title, subtitle, emoji, onBack }: { title: string; 
         {title}
       </h1>
       {subtitle && <p className="text-muted mt-1 font-semibold">{subtitle}</p>}
+    </div>
+  );
+}
+
+/** İki adımlı onay: tarayıcı confirm() diyalogları her ortamda çalışmadığı için sayfa içinde sorar. */
+export function ConfirmButton({ children, confirmText, onConfirm, variant = "danger", size = "md", className }: { children: ReactNode; confirmText: string; onConfirm: () => void; variant?: ButtonVariant; size?: "sm" | "md" | "lg"; className?: string }) {
+  const [asking, setAsking] = useState(false);
+  if (!asking) {
+    return (
+      <Button variant={variant} size={size} className={className} onClick={() => setAsking(true)}>
+        {children}
+      </Button>
+    );
+  }
+  return (
+    <div className={cx("rounded-2xl border-2 border-danger/40 bg-danger-soft p-3 text-danger-ink", className)} role="alertdialog" aria-label={confirmText}>
+      <p className="font-bold">{confirmText}</p>
+      <div className="mt-2 flex gap-2">
+        <Button size="sm" variant="outline" onClick={() => setAsking(false)}>Vazgeç</Button>
+        <Button
+          size="sm"
+          className="!bg-danger !text-white"
+          onClick={() => {
+            setAsking(false);
+            onConfirm();
+          }}
+        >
+          Evet, devam et
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function Toast({ message }: { message: string | null }) {
+  if (!message) return null;
+  return (
+    <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center px-4" role="status" aria-live="polite">
+      <div className="rounded-full bg-ink px-4 py-2.5 text-sm font-bold text-bg shadow-soft animate-pop">{message}</div>
     </div>
   );
 }

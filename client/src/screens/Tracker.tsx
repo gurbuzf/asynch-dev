@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ALLERGENS } from "../../../shared/data/reference.ts";
 import { daysBetween } from "../../../shared/logic/age.ts";
 import type { Food } from "../../../shared/types.ts";
@@ -7,7 +7,9 @@ import { Badge, Button, Callout, Card, PageHeader, SectionTitle, cx } from "../c
 import { useApi } from "../lib/api.ts";
 import { relativeDay, useBaby } from "../lib/baby.ts";
 import { navigate } from "../lib/router.ts";
+import { STANDALONE } from "../lib/env.ts";
 import { actions, getState, today, useStore, type AppState } from "../lib/store.ts";
+import { copyText, toast } from "../lib/toast.ts";
 
 export function Tracker() {
   const baby = useBaby()!;
@@ -16,6 +18,7 @@ export function Tracker() {
   const favorites = useStore((s) => s.favorites);
   const { data } = useApi<{ items: Food[] }>("/api/foods");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [pending, setPending] = useState<AppState | null>(null);
 
   const introducedCount = ALLERGENS.filter((a) => allergens[a.id]?.introducedAt).length;
   const history = Object.entries(tried)
@@ -24,22 +27,27 @@ export function Tracker() {
   const foodById = Object.fromEntries((data?.items ?? []).map((f) => [f.id, f]));
   const reactions = Object.entries(tried).filter(([, e]) => e.reaction === "reaksiyon");
 
-  const exportData = () => {
-    const blob = new Blob([JSON.stringify(getState(), null, 2)], { type: "application/json" });
+  const exportData = async () => {
+    const json = JSON.stringify(getState(), null, 2);
+    if (STANDALONE) {
+      // Artifact çerçevesi dosya indirmeyi engeller → panoya kopyala
+      toast((await copyText(json)) ? "Yedek panoya kopyalandı — bir nota yapıştırıp saklayın ✓" : "Kopyalanamadı");
+      return;
+    }
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = URL.createObjectURL(new Blob([json], { type: "application/json" }));
     a.download = `minik-tabak-${today()}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
 
-  const importData = async (file: File) => {
+  const readBackup = (text: string) => {
     try {
-      const parsed = JSON.parse(await file.text()) as AppState;
+      const parsed = JSON.parse(text) as AppState;
       if (typeof parsed !== "object" || !parsed || !("tried" in parsed)) throw new Error();
-      if (confirm("Mevcut veriler yedekteki verilerle değiştirilecek. Emin misiniz?")) actions.importData(parsed);
+      setPending(parsed);
     } catch {
-      alert("Bu dosya geçerli bir Minik Tabak yedeği değil.");
+      toast("Bu, geçerli bir Minik Tabak yedeği değil.");
     }
   };
 
@@ -152,15 +160,43 @@ export function Tracker() {
       <div className="grid gap-3 sm:grid-cols-2">
         <Card as="button" onClick={() => navigate("/rapor")}>
           <p className="font-extrabold">📄 Doktor özeti</p>
-          <p className="text-sm font-semibold text-muted">Kontrole giderken yazdırın veya PDF kaydedin.</p>
+          <p className="text-sm font-semibold text-muted">{STANDALONE ? "Alerjen ve tadım özetini kopyalayıp doktorunuzla paylaşın." : "Kontrole giderken yazdırın veya PDF kaydedin."}</p>
         </Card>
         <Card>
           <p className="font-extrabold">💾 Verileriniz bu cihazda</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" onClick={exportData}>Yedek indir</Button>
-            <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}>Yedekten yükle</Button>
-            <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
+            <Button size="sm" variant="outline" onClick={exportData}>{STANDALONE ? "Yedeği kopyala" : "Yedek indir"}</Button>
+            <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}>Dosyadan yükle</Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json,.txt"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (file) readBackup(await file.text());
+                e.target.value = "";
+              }}
+            />
           </div>
+          {pending && (
+            <div className="mt-3 rounded-2xl bg-sun-soft p-3 text-sun-ink" role="alertdialog" aria-label="Yedeği yükle">
+              <p className="font-bold">Mevcut kayıtlar yedekteki kayıtlarla değiştirilecek.</p>
+              <div className="mt-2 flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => setPending(null)}>Vazgeç</Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    actions.importData(pending);
+                    setPending(null);
+                    toast("Yedek yüklendi ✓");
+                  }}
+                >
+                  Yükle
+                </Button>
+              </div>
+            </div>
+          )}
         </Card>
       </div>
     </div>

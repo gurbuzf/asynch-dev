@@ -231,3 +231,12 @@ describe("Türkçe ekler", async () => {
     expect(genitive("Elif")).toBe("Elif'in");
   });
 });
+
+describe("alışveriş listesi birleştirme", () => {
+  it("parantezli açıklamaları aynı kalemde toplar", () => {
+    const week = buildWeeklyPlan({ ...base, ageMonths: 11, introducedAllergens: ["sut", "yumurta", "bugday", "susam", "balik"] });
+    const names = week.shopping.map((i) => i.name);
+    expect(names.some((n) => n.includes("("))).toBe(false);
+    expect(new Set(names).size).toBe(names.length);
+  });
+});

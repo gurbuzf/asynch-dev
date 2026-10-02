@@ -5,7 +5,9 @@ import { Button, PageHeader } from "../components/ui.tsx";
 import { useApi } from "../lib/api.ts";
 import { formatDate, useBaby } from "../lib/baby.ts";
 import { back } from "../lib/router.ts";
+import { STANDALONE } from "../lib/env.ts";
 import { today, useStore } from "../lib/store.ts";
+import { copyText, toast } from "../lib/toast.ts";
 
 export function Report() {
   const baby = useBaby()!;
@@ -19,10 +21,21 @@ export function Report() {
     <div className="pb-6">
       <PageHeader title="Doktor özeti" emoji="📄" onBack={() => back("/gunluk")} subtitle={`Oluşturma: ${formatDate(today(), { day: "numeric", month: "long", year: "numeric" })}`} />
       <div className="mt-3 flex gap-2 no-print">
-        <Button onClick={() => window.print()}>🖨️ Yazdır / PDF</Button>
+        {STANDALONE ? (
+          <Button
+            onClick={async () => {
+              const text = document.getElementById("rapor")?.innerText ?? "";
+              toast((await copyText(text)) ? "Özet panoya kopyalandı — mesaj veya e-postaya yapıştırın ✓" : "Kopyalanamadı — metni seçip kopyalayın");
+            }}
+          >
+            📋 Özeti kopyala
+          </Button>
+        ) : (
+          <Button onClick={() => window.print()}>🖨️ Yazdır / PDF</Button>
+        )}
       </div>
 
-      <div className="mt-5 space-y-5 rounded-3xl border border-line bg-card p-5 text-[15px] leading-relaxed">
+      <div id="rapor" className="mt-5 space-y-5 rounded-3xl border border-line bg-card p-5 text-[15px] leading-relaxed">
         <section>
           <h2 className="text-lg font-black">Bebek</h2>
           <p><b>Ad:</b> {baby.profile.name}</p>

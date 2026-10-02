@@ -31,6 +31,7 @@ export function SosSheet({ open, onClose }: { open: boolean; onClose: () => void
       >
         📞 112'yi Ara
       </a>
+      <p className="mt-2 text-center text-sm font-bold text-muted">Düğme çalışmazsa telefonunuzdan doğrudan <span className="select-all text-danger-ink">112</span>'yi tuşlayın.</p>
 
       <div className="mt-4 grid grid-cols-3 gap-1.5 rounded-2xl bg-card p-1.5 border border-line" role="tablist">
         {(

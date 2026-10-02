@@ -4,6 +4,10 @@ Bebeğinizin **yaşına göre şekillenen** günlük menüler, 45 tarif, 56 besi
 
 > ⚠️ Tıbbi tavsiye yerine geçmez. İçerik WHO (2023), AAP, ESPGHAN, CDC, NHS, NIAID, FDA, EFSA ve T.C. Sağlık Bakanlığı önerileri temel alınarak hazırlanmıştır.
 
+## 🌐 Web uygulaması (sunucusuz sürüm)
+
+`npm run build:artifact` tek dosyalık, sunucu gerektirmeyen bir sürüm üretir (`artifact/minik-tabak.html`). Bu sürümde API (`shared/api.ts`) tarayıcının içinde çalışır; Claude Artifact olarak yayınlanmıştır ve statik herhangi bir barındırmada (GitHub Pages, Netlify…) açılabilir. Ekran görüntüleri: [`docs/screenshots/`](docs/screenshots).
+
 ## Özellikler
 
 | Ekran | Ne yapar? |
@@ -34,9 +38,10 @@ Plan motoru (`shared/logic/plan.ts`) ve içerik testleri şu kuralları **zorunl
 ```bash
 npm install
 npm run dev        # API :8787 + Vite :5173 (proxy ile)
-npm test           # 47 test: içerik güvenliği, plan mantığı, API
+npm test           # 48 test: içerik güvenliği, plan mantığı, API
 npm run typecheck
 npm run build && npm start   # üretim: Express derlenmiş istemciyi de sunar → http://localhost:8787
+npm run build:artifact       # sunucusuz tek dosya → artifact/minik-tabak.html
 ```
 
 ## Mimari
@@ -46,7 +51,8 @@ shared/            Ortak alan katmanı (API + istemci)
   types.ts         Tipler
   data/            Tarifler, besinler, ipuçları, makaleler, evreler, alerjenler, kaynaklar
   logic/           Yaş/evre hesabı, deterministik günlük & haftalık plan, alışveriş listesi, arama
-server/            Express 5 API (+ üretimde SPA sunumu)
+shared/api.ts      Çerçeveden bağımsız API işleyicisi (Express ve tarayıcı içi sürüm ortak kullanır)
+server/            Express 5 adaptörü (+ üretimde SPA sunumu)
 client/            React 19 + Tailwind 4 PWA (hash router, localStorage store)
 tests/             Vitest + Supertest
 ```

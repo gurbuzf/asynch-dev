@@ -1,4 +1,4 @@
-import { Button, Callout, Card, PageHeader, SectionTitle } from "../components/ui.tsx";
+import { Button, Callout, Card, ConfirmButton, PageHeader, SectionTitle } from "../components/ui.tsx";
 import { useBaby } from "../lib/baby.ts";
 import { back, navigate } from "../lib/router.ts";
 import { actions } from "../lib/store.ts";
@@ -34,15 +34,9 @@ export function ProfileScreen() {
       </Callout>
 
       <SectionTitle emoji="⚠️">Tehlikeli bölge</SectionTitle>
-      <Button
-        variant="danger"
-        className="w-full"
-        onClick={() => {
-          if (confirm("Tüm veriler (profil, tadım günlüğü, alerjenler, favoriler) silinecek. Emin misiniz?")) actions.resetAll();
-        }}
-      >
+      <ConfirmButton className="w-full" confirmText="Profil, tadım günlüğü, alerjen kayıtları ve favoriler silinecek. Emin misiniz?" onConfirm={actions.resetAll}>
         Tüm verileri sil
-      </Button>
+      </ConfirmButton>
     </div>
   );
 }

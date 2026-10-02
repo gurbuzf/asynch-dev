@@ -6,7 +6,9 @@ import { useApi } from "../lib/api.ts";
 import { formatDate, useBaby } from "../lib/baby.ts";
 import { usePlanUrl } from "../lib/plan.ts";
 import { back, navigate } from "../lib/router.ts";
+import { STANDALONE } from "../lib/env.ts";
 import { actions, today, useStore } from "../lib/store.ts";
+import { copyText, toast } from "../lib/toast.ts";
 
 export function Weekly() {
   const baby = useBaby()!;
@@ -87,15 +89,15 @@ function ShoppingView({ plan }: { plan: WeeklyPlan }) {
 
   const share = async () => {
     const payload = `🛒 Minik Tabak alışveriş listesi\n\n${text}`;
-    try {
-      if (navigator.share) await navigator.share({ text: payload });
-      else {
-        await navigator.clipboard.writeText(payload);
-        alert("Liste panoya kopyalandı.");
+    if (!STANDALONE && navigator.share) {
+      try {
+        await navigator.share({ text: payload });
+        return;
+      } catch {
+        // paylaşım iptal edildi ya da desteklenmiyor → panoya kopyala
       }
-    } catch {
-      // kullanıcı paylaşımı iptal etti
     }
+    toast((await copyText(payload)) ? "Liste panoya kopyalandı ✓" : "Kopyalanamadı — listeyi seçip kopyalayın");
   };
 
   return (
@@ -106,7 +108,7 @@ function ShoppingView({ plan }: { plan: WeeklyPlan }) {
         </Badge>
         <div className="flex gap-2">
           <Button size="sm" variant="ghost" onClick={actions.clearShopping}>Temizle</Button>
-          <Button size="sm" onClick={share}>📤 Paylaş</Button>
+          <Button size="sm" onClick={share}>{STANDALONE ? "📋 Kopyala" : "📤 Paylaş"}</Button>
         </div>
       </div>
       <div className="mt-3 space-y-3">

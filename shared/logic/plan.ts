@@ -278,8 +278,10 @@ export function buildShoppingList(plans: DailyPlan[]): ShoppingItem[] {
       if (!recipe) continue;
       for (const ing of recipe.ingredients) {
         if (NON_SHOPPING.test(ing.name)) continue;
-        const key = normalizeTr(ing.name);
-        const item = items.get(key) ?? { name: ing.name, group: ing.group, amounts: [], recipes: [] };
+        // "kabak" ile "kabak (rendelenip suyu sıkılmış)" aynı alışveriş kalemidir
+        const base = ing.name.replace(/\s*\([^)]*\)/g, "").trim() || ing.name;
+        const key = normalizeTr(base);
+        const item = items.get(key) ?? { name: base, group: ing.group, amounts: [], recipes: [] };
         item.amounts.push(ing.amount);
         if (!item.recipes.includes(recipe.title)) item.recipes.push(recipe.title);
         items.set(key, item);
