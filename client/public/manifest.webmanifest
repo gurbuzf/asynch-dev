@@ -1,0 +1,13 @@
+{
+  "name": "Minik Tabak — Ek Gıda Rehberi",
+  "short_name": "Minik Tabak",
+  "description": "Bebeğinizin yaşına göre günlük menü, tarifler ve alerjen takibi.",
+  "lang": "tr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8F1",
+  "theme_color": "#D9583C",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

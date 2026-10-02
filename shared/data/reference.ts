@@ -1,0 +1,292 @@
+import type { AllergenInfo, MealSlot, Nutrient, ShoppingGroup, Source, SourceId, Stage, Texture, FeedingMethod, FoodCategory } from "../types.ts";
+
+export const SOURCES: Record<SourceId, Source> = {
+  who2023: {
+    id: "who2023",
+    title: "WHO guideline for complementary feeding of infants and young children 6–23 months of age (2023)",
+    publisher: "Dünya Sağlık Örgütü (WHO)",
+    url: "https://www.who.int/publications/i/item/9789240081864",
+  },
+  aap: {
+    id: "aap",
+    title: "Starting Solid Foods",
+    publisher: "Amerikan Pediatri Akademisi (AAP) — HealthyChildren.org",
+    url: "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Starting-Solid-Foods.aspx",
+  },
+  espghan: {
+    id: "espghan",
+    title: "Complementary Feeding: A Position Paper by the ESPGHAN Committee on Nutrition (2017)",
+    publisher: "Avrupa Pediatrik Gastroenteroloji, Hepatoloji ve Beslenme Derneği (ESPGHAN)",
+    url: "https://pubmed.ncbi.nlm.nih.gov/28027215/",
+  },
+  cdc: {
+    id: "cdc",
+    title: "Foods and Drinks to Avoid or Limit",
+    publisher: "ABD Hastalık Kontrol ve Önleme Merkezi (CDC)",
+    url: "https://www.cdc.gov/infant-toddler-nutrition/foods-and-drinks/foods-and-drinks-to-avoid-or-limit.html",
+  },
+  nhs: {
+    id: "nhs",
+    title: "Weaning — Start for Life",
+    publisher: "İngiltere Ulusal Sağlık Hizmeti (NHS)",
+    url: "https://www.nhs.uk/best-start-in-life/baby/weaning/",
+  },
+  bliss: {
+    id: "bliss",
+    title: "Baby-Led Introduction to SolidS (BLISS) — pilot çalışma (2015)",
+    publisher: "Otago Üniversitesi / BMC Pediatrics",
+    url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4549838/",
+  },
+  efsa: {
+    id: "efsa",
+    title: "Yapraklı sebzelerde nitrat ve çocuklar için risk değerlendirmesi",
+    publisher: "Avrupa Gıda Güvenliği Otoritesi (EFSA)",
+    url: "https://www.efsa.europa.eu/en/press/news/contam101209",
+  },
+  saglikbak: {
+    id: "saglikbak",
+    title: "Bebek ve Çocuk Beslenmesi, Demir Gibi Türkiye ve D Vitamini Destek Programları",
+    publisher: "T.C. Sağlık Bakanlığı Halk Sağlığı Genel Müdürlüğü",
+    url: "https://hsgm.saglik.gov.tr/",
+  },
+  naiad: {
+    id: "naiad",
+    title: "Addendum Guidelines for the Prevention of Peanut Allergy (2017)",
+    publisher: "ABD Ulusal Alerji ve Enfeksiyon Hastalıkları Enstitüsü (NIAID)",
+    url: "https://www.niaid.nih.gov/diseases-conditions/guidelines-clinicians-and-patients-food-allergy",
+  },
+  fda: {
+    id: "fda",
+    title: "Advice about Eating Fish",
+    publisher: "ABD Gıda ve İlaç Dairesi (FDA)",
+    url: "https://www.fda.gov/food/consumers/advice-about-eating-fish",
+  },
+};
+
+export const STAGES: Stage[] = [
+  {
+    id: "hazirlik",
+    title: "Hazırlık Dönemi",
+    emoji: "🍼",
+    fromMonths: 0,
+    toMonths: 6,
+    headline: "Şimdilik tek ihtiyacı anne sütü veya mama. Ek gıda için hazırlık işaretlerini izleyin.",
+    mealsPerDay: "Ek gıda yok — isteğe göre anne sütü / mama",
+    portion: "—",
+    textures: "Yalnızca süt",
+    milk: "İlk 6 ay yalnızca anne sütü (ya da bebek maması). D vitamini desteğini aksatmayın.",
+    water: "Su, çay, meyve suyu gerekmez. Anne sütü ve mama tüm sıvı ihtiyacını karşılar.",
+    goals: [
+      "Hazırlık işaretlerini gözlemlemek: desteksiz/az destekle dik oturma, başını sabit tutma, nesneyi ağzına götürme",
+      "Aile sofrasında bebeği kucağınızda oturtup yemek kokuları ve sesleriyle tanıştırmak",
+      "Mama sandalyesi, yumuşak uçlu kaşık ve açık bardak gibi ekipmanı hazırlamak",
+    ],
+    skills: ["Dil itme refleksi azalır", "El-göz-ağız koordinasyonu gelişir"],
+  },
+  {
+    id: "ilk-tatlar",
+    title: "İlk Tatlar",
+    emoji: "🥄",
+    fromMonths: 6,
+    toMonths: 7,
+    headline: "Amaç doyurmak değil, tanıştırmak. Her kaşık bir keşif!",
+    mealsPerDay: "İlk 2 hafta günde 1 öğün, sonra 2 öğün",
+    portion: "1–2 çay kaşığıyla başlayıp 2–3 yemek kaşığına çıkın",
+    textures: "Koyu kıvamlı pürüzsüz püreler ve parmak boyu, iki parmakla ezilebilen yumuşak çubuklar",
+    milk: "Süt hâlâ ana besin kaynağı. Ek gıdayı emzirmeden/mamadan yaklaşık 1 saat sonra verin.",
+    water: "Öğünlerle birlikte açık bardak veya pipetli bardaktan birkaç yudum kaynatılıp soğutulmuş su.",
+    goals: [
+      "Demir zengini besinleri ilk haftadan başlatmak (et, mercimek, yumurta)",
+      "Acımsı yeşil sebzeleri (brokoli, kabak, bezelye) meyvelerden önce/sık sunmak",
+      "Alerjen besinleri birer birer ve erken tanıştırmak",
+    ],
+    skills: ["Kaşıktan almayı öğrenir", "Avuç içiyle kavrar", "Öğürme refleksi korunma mekanizmasıdır"],
+  },
+  {
+    id: "kesif",
+    title: "Doku Keşfi",
+    emoji: "🥕",
+    fromMonths: 7,
+    toMonths: 9,
+    headline: "Pürüzsüzden pütürlüye geçiş zamanı — çiğneme becerisi tam şimdi gelişiyor.",
+    mealsPerDay: "Günde 2–3 ana öğün",
+    portion: "Öğün başına 3–4 yemek kaşığından yarım su bardağına (≈125 ml) kadar",
+    textures: "Çatalla ezilmiş, pütürlü kıvamlar; yumuşak parmak besinler",
+    milk: "Anne sütü / mama isteğe göre devam eder (genellikle günde 500–600 ml civarı).",
+    water: "Her öğünde açık bardaktan su sunun. Meyve suyu vermeyin.",
+    goals: [
+      "Her gün en az bir demir kaynağı + C vitamini kaynağı",
+      "Pütürlü dokulara 9. aydan önce geçmek (geç geçiş seçiciliği artırır)",
+      "Kendi kendine yeme denemelerini desteklemek",
+    ],
+    skills: ["Çene ile ezme (çiğneme) başlar", "Bir elden diğerine nesne aktarır", "Desteksiz oturur"],
+  },
+  {
+    id: "pratik",
+    title: "Küçük Gurme",
+    emoji: "🧆",
+    fromMonths: 9,
+    toMonths: 12,
+    headline: "Kıskaç kavrama geldi! Küçük lokmalar ve aile yemeklerinin tuzsuz versiyonları.",
+    mealsPerDay: "Günde 3 ana öğün + 1–2 ara öğün",
+    portion: "Öğün başına yarım–¾ su bardağı (≈125–180 ml)",
+    textures: "İnce doğranmış, kıyılmış; nohut büyüklüğünde yumuşak parçalar",
+    milk: "Anne sütü / mama devam eder; katı besinler artık enerjinin önemli kısmını sağlar.",
+    water: "Öğünlerde ve aralarda açık bardaktan su. Biberondan bardağa geçişi başlatın.",
+    goals: [
+      "Aile sofrasına katılım — aynı yemeğin tuzsuz, uygun dokulu versiyonu",
+      "Kendi kendine yemeyi ve kaşık kullanmayı teşvik etmek",
+      "Tanıştırılan alerjenleri düzenli olarak menüde tutmak",
+    ],
+    skills: ["Başparmak-işaret parmağı ile kıskaç kavrama", "Açık bardaktan içme", "Kaşığı tutmaya çalışma"],
+  },
+  {
+    id: "aile-sofrasi",
+    title: "Aile Sofrası",
+    emoji: "👨‍👩‍👧",
+    fromMonths: 12,
+    toMonths: 24,
+    headline: "Artık ailenin bir parçası — aynı sofra, aynı yemek, az tuz.",
+    mealsPerDay: "Günde 3 ana öğün + 2 ara öğün",
+    portion: "Öğün başına ¾–1 su bardağı (≈180–250 ml)",
+    textures: "Aile yemekleri; sert ve yuvarlak besinleri dörde bölerek",
+    milk: "Anne sütü 2 yaş ve sonrasına kadar sürebilir. Tam yağlı inek sütü içecek olarak başlanabilir; günde ~400–500 ml'yi aşmayın.",
+    water: "Ana içecek su. Şekerli içecek ve meyve suyundan uzak durun.",
+    goals: [
+      "Biberonu bırakıp açık bardağa tam geçiş",
+      "Çeşitliliği korumak: her gün sebze, meyve, tahıl, protein, süt ürünü",
+      "Yemek saatlerinde ekran yok, birlikte yemek",
+    ],
+    skills: ["Kaşık ve çatal kullanmaya başlar", "Bardaktan kendi içer", "Tercihlerini ifade eder"],
+  },
+];
+
+export const ALLERGENS: AllergenInfo[] = [
+  {
+    id: "yumurta",
+    name: "Yumurta",
+    emoji: "🥚",
+    order: 1,
+    firstServe: "İyice pişmiş (sarısı ve akı tamamen katılaşmış) yumurtadan ¼ çay kaşığını ezip sevdiği bir püreye karıştırın.",
+    maintain: "Haftada 2–3 kez iyi pişmiş yumurta (omlet şeridi, haşlanmış yumurta ezmesi, muffin).",
+  },
+  {
+    id: "yerfistigi",
+    name: "Yer fıstığı",
+    emoji: "🥜",
+    order: 2,
+    firstServe: "¼ çay kaşığı pürüzsüz, tuzsuz-şekersiz fıstık ezmesini ılık su veya anne sütüyle sulandırıp püreye karıştırın. Bütün/kırık fıstık asla!",
+    maintain: "Haftada en az 2–3 öğün, öğün başı ~2 çay kaşığı fıstık ezmesi (sulandırılmış veya yemeğe karıştırılmış).",
+  },
+  {
+    id: "sut",
+    name: "İnek sütü proteini",
+    emoji: "🥛",
+    order: 3,
+    firstServe: "1–2 tatlı kaşığı tam yağlı, şekersiz ev yoğurdu.",
+    maintain: "Her gün yoğurt veya tuzsuz/az tuzlu peynir. İnek sütü içecek olarak 12. aydan sonra.",
+  },
+  {
+    id: "susam",
+    name: "Susam",
+    emoji: "🫘",
+    order: 4,
+    firstServe: "¼ çay kaşığı tahini yoğurda veya sebze püresine karıştırın.",
+    maintain: "Haftada 2–3 kez tahinli tarifler (bebek humusu, tahinli yoğurt).",
+  },
+  {
+    id: "bugday",
+    name: "Buğday (gluten)",
+    emoji: "🌾",
+    order: 5,
+    firstServe: "Az miktarda: 1 çay kaşığı irmik ya da ince bulgur veya bir parça tam buğday ekmeği şeridi.",
+    maintain: "İlk haftalarda büyük miktarlardan kaçınarak düzenli verin (ESPGHAN).",
+  },
+  {
+    id: "balik",
+    name: "Balık",
+    emoji: "🐟",
+    order: 6,
+    firstServe: "Kılçığı tamamen ayıklanmış, iyi pişmiş somon/levrek/mezgitten 1 tatlı kaşığı ezme.",
+    maintain: "Haftada 2 kez düşük cıvalı balık (somon, hamsi, sardalya, levrek, çipura, mezgit).",
+  },
+  {
+    id: "agacyemisi",
+    name: "Ağaç yemişleri",
+    emoji: "🌰",
+    order: 7,
+    firstServe: "Tuzsuz ceviz/badem/fındık ezmesi veya un gibi öğütülmüşünden ¼ çay kaşığı. Her yemişi ayrı ayrı tanıştırın.",
+    maintain: "Tanıştırdığınız her yemişi haftada 1–2 kez öğütülmüş/ezme olarak verin. Bütün yemiş 5 yaşından önce yok.",
+  },
+  {
+    id: "soya",
+    name: "Soya",
+    emoji: "🫛",
+    order: 8,
+    firstServe: "1–2 tatlı kaşığı sade, şekersiz soya yoğurdu veya çatalla ezilmiş tofu.",
+    maintain: "Haftada 1–2 kez.",
+  },
+  {
+    id: "kabuklu",
+    name: "Kabuklu deniz ürünleri",
+    emoji: "🦐",
+    order: 9,
+    firstServe: "İyice pişmiş karidesi çok ince kıyıp/püre yapıp ¼ çay kaşığı kadar sunun.",
+    maintain: "Ayda birkaç kez yeterlidir; çiğ veya az pişmiş deniz ürünü yok.",
+  },
+];
+
+export const MEAL_LABELS: Record<MealSlot, string> = {
+  kahvalti: "Kahvaltı",
+  ogle: "Öğle",
+  aksam: "Akşam",
+  ara: "Ara öğün",
+};
+
+export const TEXTURE_LABELS: Record<Texture, string> = {
+  puree: "Pürüzsüz püre",
+  ezme: "Pütürlü ezme",
+  parmak: "Parmak besin",
+  dograma: "İnce doğranmış",
+  aile: "Aile yemeği",
+};
+
+export const METHOD_LABELS: Record<FeedingMethod, string> = {
+  kasik: "Kaşıkla (püre)",
+  blw: "Bebek liderliğinde (BLW)",
+  karma: "Karma yöntem",
+};
+
+export const NUTRIENT_LABELS: Record<Nutrient, { label: string; emoji: string }> = {
+  demir: { label: "Demir", emoji: "🩸" },
+  protein: { label: "Protein", emoji: "💪" },
+  omega3: { label: "Omega-3", emoji: "🧠" },
+  cvit: { label: "C vitamini", emoji: "🍊" },
+  kalsiyum: { label: "Kalsiyum", emoji: "🦴" },
+  lif: { label: "Lif", emoji: "🌿" },
+  cinko: { label: "Çinko", emoji: "⚡" },
+  avit: { label: "A vitamini", emoji: "👁️" },
+  enerji: { label: "Sağlıklı yağ/enerji", emoji: "🔋" },
+};
+
+export const SHOPPING_LABELS: Record<ShoppingGroup, string> = {
+  sebze: "🥦 Sebzeler",
+  meyve: "🍎 Meyveler",
+  et: "🍗 Et, tavuk, balık, yumurta",
+  sut: "🥛 Süt ürünleri",
+  tahil: "🌾 Tahıllar",
+  bakliyat: "🫘 Bakliyat",
+  yag: "🫒 Yağlar & ezmeler",
+  baharat: "🌿 Baharat & yeşillik",
+  diger: "🧺 Diğer",
+};
+
+export const FOOD_CATEGORY_LABELS: Record<FoodCategory, string> = {
+  sebze: "Sebzeler",
+  meyve: "Meyveler",
+  protein: "Et, balık, yumurta",
+  tahil: "Tahıllar",
+  bakliyat: "Bakliyat",
+  sut: "Süt ürünleri",
+  yag: "Yağlar & ezmeler",
+};
